@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager with Categories</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            margin-top: 5rem;
+            font-family: "Roboto Condensed", sans-serif;
+            background-color: #3b3f54;
+        }
+
+        #container {
+            line-height: 60px;
+        }
+
+        h2 {
+            color: #fff;
+        }
+
+        #task {
+            height: 30px;
+            width: 25%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        #task:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #task-error {
+            color: #fff;
+        }
+
+        #category {
+            height: 40px;
+            width: 10%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        #category:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #add,
+        #delete {
+            margin-top: 1rem;
+            height: 40px;
+            width: 90px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #add:hover,
+        #delete:hover {
+            background-color: #3e8e41;
+            color: #fff;
+        }
+
+        #add {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+
+        #delete {
+            background-color: #f44336;
+            color: #fff;
+        }
+
+        li {
+            list-style: none;
+            padding: 10px;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s;
+            color: #fff;
+        }
+
+        li:hover {
+            background-color: #f0f0f0;
+            color: #000;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .edit-btn {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .edit-btn:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <h2>Task manager</h2>
+        <input id="task" placeholder="Enter your task" required>
+        <span id="task-error" class="error"></span>
+        <select id="category">
+            <option value="all">All</option>
+            <option value="work">Work</option>
+            <option value="personal">Personal</option>
+        </select><br>
+        <button id="add">Add Task</button>
+        <button id="delete">Delete Tasks</button>
+        <span id="delete-error" class="error"></span>
+    </div>
+    <ul id="task-list"></ul>
+    <script>
+        let taskInput = document.getElementById("task");
+        let categoryInput = document.getElementById("category");
+        let addTask = document.getElementById("add");
+        let deleteTask = document.getElementById("delete");
+        let list = document.getElementById("task-list");
+        let taskError = document.getElementById("task-error");
+        let deleteError = document.getElementById("delete-error");
+
+        let tasks = [];
+
+        addTask.addEventListener("click", () => {
+            if (taskInput.value.trim() === "") {
+                alert("Task field is required");
+            } else {
+                taskError.innerText = "";
+                let task = taskInput.value;
+                let category = categoryInput.value;
+                tasks.push({ task, category, done: false });
+                renderTask();
+                taskInput.value = "";
+            }
+        });
+
+        deleteTask.addEventListener("click", () => {
+            let tasksToDelete = tasks.filter((task) => task.done);
+            if (tasksToDelete.length === 0) {
+                alert("No tasks selected for deletion");
+            } else {
+                deleteError.innerText = "";
+                let confirmDelete = confirm("Are you sure you want to delete the selected tasks?");
+                if (confirmDelete) {
+                    tasks = tasks.filter((task) => !task.done);
+                    renderTask();
+                }
+            }
+        });
+
+        function renderTask() {
+            list.innerHTML = "";
+            tasks.forEach((task, index) => {
+                let li = document.createElement("li");
+                li.innerHTML = `
+                    <input type="checkbox" ${task.done ? 'checked' : ''} onclick="toggle(${index})">
+                    <span>${task.task} (${task.category}) </span>
+                    <button class="edit-btn" onclick="editTask(${index})">Edit</button>
+                `;
+                list.appendChild(li)
+            });
+        }
+
+        function toggle(index) {
+            tasks[index].done = !tasks[index].done;
+        }
+
+        function editTask(index) {
+            let newTask = prompt("Enter new task:");
+            let newCategory = prompt("Enter new category:");
+            tasks[index].task = newTask;
+            tasks[index].category = newCategory;
+            renderTask();
+        }
+    </script>
+</body>
+
+</html>
