@@ -130,7 +130,6 @@
     <div id="container">
         <h2>Task manager</h2>
         <input id="task" placeholder="Enter your task" required>
-        <span id="task-error" class="error"></span>
         <select id="category">
             <option value="all">All</option>
             <option value="work">Work</option>
@@ -138,7 +137,6 @@
         </select><br>
         <button id="add">Add Task</button>
         <button id="delete">Delete Tasks</button>
-        <span id="delete-error" class="error"></span>
     </div>
     <ul id="task-list"></ul>
     <script>
@@ -147,16 +145,13 @@
         let addTask = document.getElementById("add");
         let deleteTask = document.getElementById("delete");
         let list = document.getElementById("task-list");
-        let taskError = document.getElementById("task-error");
-        let deleteError = document.getElementById("delete-error");
 
         let tasks = [];
 
         addTask.addEventListener("click", () => {
-            if (taskInput.value.trim() === "") {
+            if (taskInput.value === "") {
                 alert("Task field is required");
             } else {
-                taskError.innerText = "";
                 let task = taskInput.value;
                 let category = categoryInput.value;
                 tasks.push({ task, category, done: false });
@@ -170,7 +165,6 @@
             if (tasksToDelete.length === 0) {
                 alert("No tasks selected for deletion");
             } else {
-                deleteError.innerText = "";
                 let confirmDelete = confirm("Are you sure you want to delete the selected tasks?");
                 if (confirmDelete) {
                     tasks = tasks.filter((task) => !task.done);
